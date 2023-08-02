@@ -1,1 +1,40 @@
+    .data                   @ Data section where constant values can be defined
+num1:   .word 0             @ Placeholder for number 1 (will be changed during grading)
+num2:   .word 0             @ Placeholder for number 2 (will be changed during grading)
+value:  .word 15            @ Decimal 15 stored in R5
+
+    .text                   @ Code section where the main program resides
+    .global main            @ Entry point for the program
+
+main:
+    ldr r0, =num1           @ Load the address of num1 into r0
+    ldr r1, =num2           @ Load the address of num2 into r1
+    ldr r5, =value          @ Load the address of the constant value into r5
+
+    ldr r0, [r0]            @ Load the value of num1 into r0
+    ldr r1, [r1]            @ Load the value of num2 into r1
+
+    cmp r0, r1              @ Compare the values in r0 and r1
+
+    bgt greater_than        @ If r0 > r1, go to 'greater_than' label
+    blt less_than           @ If r0 < r1, go to 'less_than' label
+
+equal:
+    mov r2, r5              @ If r0 = r1, move the value in r5 to r2
+    ror r2, r2, #1          @ Rotate the value in r2 right by 1
+    mov r5, r2              @ Move the result from r2 to r5
+    b terminate             @ Branch to 'terminate' label to end the program
+
+greater_than:
+    lsl r5, r5, #2          @ If r0 > r1, perform logical left shift on r5 (multiply by 4)
+    b terminate             @ Branch to 'terminate' label to end the program
+
+less_than:
+    lsr r5, r5, #1          @ If r0 < r1, perform logical right shift on r5 (divide by 2)
+    b terminate             @ Branch to 'terminate' label to end the program
+
+terminate:
+    mov r0, #0              @ Set r0 to 0 to indicate successful program execution
+    mov r7, #1              @ Set r7 to 1 to indicate an exit syscall
+    swi 0                   @ Software interrupt to terminate the program
 
